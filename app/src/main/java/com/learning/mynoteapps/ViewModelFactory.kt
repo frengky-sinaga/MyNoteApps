@@ -2,11 +2,13 @@ package com.learning.mynoteapps
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.learning.mynoteapps.ui.insert.NoteAddUpdateViewModel
 import com.learning.mynoteapps.ui.main.MainViewModel
 import java.lang.IllegalArgumentException
 
-class ViewModelFactory private constructor(private val mApplication: Application) {
+class ViewModelFactory private constructor(private val mApplication: Application) :
+    ViewModelProvider.NewInstanceFactory() {
     companion object {
         @Volatile
         private var INSTANCE: ViewModelFactory? = null
