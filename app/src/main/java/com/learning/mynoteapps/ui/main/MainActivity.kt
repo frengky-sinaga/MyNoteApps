@@ -6,18 +6,21 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.learning.mynoteapps.R
 import com.learning.mynoteapps.ViewModelFactory
 import com.learning.mynoteapps.databinding.ActivityMainBinding
 import com.learning.mynoteapps.db.Note
+import com.learning.mynoteapps.ui.NotePagedListAdapter
 import com.learning.mynoteapps.ui.insert.NoteAddUpdateActivity
 
 class MainActivity : AppCompatActivity() {
     private var _activityMainBinding: ActivityMainBinding? = null
     private val binding get() = _activityMainBinding
-    private lateinit var noteAdapter: NoteAdapter
+
+    private lateinit var noteAdapter: NotePagedListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         val mainViewModel = obtainViewModel(this)
         mainViewModel.getAllNotes().observe(this, noteObserver)
 
-        noteAdapter = NoteAdapter(this)
+        noteAdapter = NotePagedListAdapter(this)
 
         binding?.rvNotes?.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -75,9 +78,9 @@ class MainActivity : AppCompatActivity() {
         _activityMainBinding = null
     }
 
-    private val noteObserver = Observer<List<Note>> { noteList ->
+    private val noteObserver = Observer<PagedList<Note>> { noteList ->
         if (noteList != null) {
-            noteAdapter.setListNotes(noteList)
+            noteAdapter.submitList(noteList)
         }
     }
 }

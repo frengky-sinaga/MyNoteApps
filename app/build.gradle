@@ -61,4 +61,7 @@ dependencies {
     def room = '2.3.0'
     implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
+
+    def paging = '2.1.2'
+    implementation "androidx.paging:paging-runtime-ktx:$paging"
 }
