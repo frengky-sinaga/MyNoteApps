@@ -3,6 +3,8 @@ package com.learning.mynoteapps.ui.main
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,6 +15,7 @@ import com.learning.mynoteapps.R
 import com.learning.mynoteapps.ViewModelFactory
 import com.learning.mynoteapps.databinding.ActivityMainBinding
 import com.learning.mynoteapps.db.Note
+import com.learning.mynoteapps.helper.SortUtils
 import com.learning.mynoteapps.ui.NotePagedListAdapter
 import com.learning.mynoteapps.ui.insert.NoteAddUpdateActivity
 
@@ -21,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private val binding get() = _activityMainBinding
 
     private lateinit var noteAdapter: NotePagedListAdapter
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,8 +32,8 @@ class MainActivity : AppCompatActivity() {
         _activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        val mainViewModel = obtainViewModel(this)
-        mainViewModel.getAllNotes().observe(this, noteObserver)
+        mainViewModel = obtainViewModel(this)
+        mainViewModel.getAllNotes(SortUtils.NEWEST).observe(this, noteObserver)
 
         noteAdapter = NotePagedListAdapter(this)
 
@@ -82,5 +86,22 @@ class MainActivity : AppCompatActivity() {
         if (noteList != null) {
             noteAdapter.submitList(noteList)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        var sort =""
+        when(item.itemId){
+            R.id.action_newest -> sort = SortUtils.NEWEST
+            R.id.action_oldest -> sort = SortUtils.OLDEST
+            R.id.action_random -> sort = SortUtils.RANDOM
+        }
+        mainViewModel.getAllNotes(sort).observe(this, noteObserver)
+        item.isChecked = true
+        return super.onOptionsItemSelected(item)
     }
 }
